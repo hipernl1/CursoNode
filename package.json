@@ -1,0 +1,24 @@
+{
+  "name": "cursonode",
+  "version": "1.0.0",
+  "description": "Desarrolo de Curso de NodeJS",
+  "main": "principal.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "yargs": "^13.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hipernl1/CursoNode.git"
+  },
+  "author": "Leonardo Cruz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hipernl1/CursoNode/issues"
+  },
+  "homepage": "https://github.com/hipernl1/CursoNode#readme"
+}

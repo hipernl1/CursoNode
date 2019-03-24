@@ -1,58 +1,60 @@
-const {listarCursos, buscarCurso, generarSoporte} = require('./Cursos');
-
+const {listarCursos, buscarCurso,mostrarCurso, generarSoporte} = require('./Cursos');
+const express = require('express')
+const app = express()
+ 
 const opciones = {
     seleccionCurso : {
         demand : true, 
-        alias : 'id'
+        alias : 'i'
     },
     nombreEstudiante : {
         demand : true, 
-        alias : 'nombre'
+        alias : 'n'
     },
     cedula : {
         demand : true, 
-        alias : 'cc'
-    },
-    interesado: {
-        default : true,
-        alias : 'Int' 
+        alias : 'c'
     }
 }
 
+let resultado
 
 const argv = require('yargs')
     .command('inscribir', 'Incripción al curso', opciones) 
     .argv
 
 if(argv.nombreEstudiante === undefined){
-    listarCursos();        
+    resultado = listarCursos(); 
+    console.log(resultado)      
 }    
     
 let ejecutarComandos = () => {
-    //setTimeout(function(){
-        console.log('**********************************************************'); 
-        console.log('Selecciono el curso con Id: '+argv.seleccionCurso); 
+        resultado = "Selecciono el curso con Id: "+argv.seleccionCurso+"<br/>"; 
         let busqueda = buscarCurso(argv.seleccionCurso);        
-        if(busqueda){
-            console.log('**** Quedaste Inscrito. ****'); 
-            console.log(' Estudiante: '+argv.nombreEstudiante); 
-            console.log(' Cédula:     '+argv.cedula); 
-            console.log('**********************************************************'); 
-            console.log('**** Generando Archivo  ****'); 
-            generarSoporte(argv.nombreEstudiante, argv.cedula, argv.seleccionCurso);
-        }else{
-            console.log(''); 
-            console.log('********         NO ESTAS INTERESADO         *******'); 
-            console.log('******** Verifica nuestros cursos nuevamente *******'); 
-            console.log(''); 
+        console.log ("Resulyado: "+busqueda)
+        if(busqueda == undefined){            
+            resultado = resultado + "NO ESTAS INTERESADO"+ 
+                        " Verifica nuestros cursos nuevamente "+
             listarCursos();        
+        }else{
+            resultado = resultado + " Quedaste Inscrito. " + 
+                " Estudiante: "+argv.nombreEstudiante +
+                " Cédula:     "+argv.cedula +
+            mostrarCurso(busqueda)    
+            generarSoporte(argv.nombreEstudiante, argv.cedula, argv.seleccionCurso);
         }        
-   // }, 8000);
+        return resultado
 }
 
 if(argv.nombreEstudiante != undefined){
     ejecutarComandos();
 }
     
+app.get('/', function (req, res) {
+    res.send(resultado)
+})
+   
+  
 
-    
+
+app.listen(3000)

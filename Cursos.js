@@ -28,52 +28,43 @@ let cursos = [
 ];
 
 let listarCursos = () => {
-    console.log('**************************************************');
-    console.log('           Listado de cursos disponibles          ');
-    console.log('**************************************************');
+    let resultado= "<p align='center'>**************************************************</p><br/>"+
+           "<p align='center'>Listado de cursos disponibles</p><br/>"+
+           "<p align='center'>**************************************************</p><br/>";
     for (var n in cursos) {    
         let curso = (cursos[n]);         
-        espera(curso, n);
+        resultado = resultado + mostrarCurso(curso);
     };
+    return resultado;
+
 }
 function espera(curso,n) {
   setTimeout(() => 
      {
-         mostrarCurso(curso);
+        return mostrarCurso(curso);
      }, n * 2000);    
 }
 
 function mostrarCurso(curso){
-    if(curso === undefined){
-        console.log(" ******************************* ");    
-        console.log(" ***  Curso no Encontrado   **** ");    
-        console.log(" ******************************* ");   
-        return false; 
+    if(curso == undefined){
+        return "<p align='left'>Curso no Encontrado   **** \n" +   
+               " *******************************</p><br/> "
     }else{
-        console.log(" ******************************* ");
-        console.log(" Curso ID: "+curso.id);
-        console.log(" Nombre curso: "+curso.nombre);
-        console.log(" Duración curso: "+curso.duracion);
-        console.log(" Valor curso: "+curso.valor);
-        console.log(" ******************************* ");
-        console.log("");
-        return true;
+        return escribirCurso(curso)
     }
 }
 
 
 let buscarCurso = (identificador) => { 
     console.log(" Buscando Curso.. ");
-    return mostrarCurso(cursos.find(curso => curso.id  === identificador));
+    return cursos.find(curso => curso.id  == identificador);
 }
 
 function escribirCurso(curso){
-     return " ******************************* \n"+
-            " Curso ID: "+curso.id+"\n"+
-            " Nombre curso: "+curso.nombre+"\n"+
-            " Duración curso: "+curso.duracion+"\n"+
-            " Valor curso: "+curso.valor+"\n"+
-            " ******************************* "
+     return " <p align='left'>Curso ID: "+curso.id+
+            " Nombre curso: "+curso.nombre+
+            " Duración curso: "+curso.duracion+
+            " Valor curso: "+curso.valor+"</p><br/> "
 }
 
 
@@ -85,7 +76,7 @@ let crearContenidoSoporte = (nombre, cedula, idCurso) => {
            " Estudiante: "+nombre+"\n"+
            " Cédula:     "+cedula+"\n\n"+
            " Se encuentra inscrito en el curso:\n"+
-           escribirCurso(cursos.find(curso => curso.id  === idCurso));
+           mostrarCurso(cursos.find(curso => curso.id  === idCurso));
 }
 
 
@@ -97,5 +88,6 @@ let generarSoporte = (nombre, cedula, idCurso) => fs.writeFile(archivo, crearCon
 module.exports = {
     listarCursos,
     buscarCurso,
+    mostrarCurso,
     generarSoporte
 };
