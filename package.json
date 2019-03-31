@@ -2,9 +2,14 @@
   "name": "cursonode",
   "version": "1.0.0",
   "description": "Desarrolo de Curso de NodeJS",
-  "main": "principal.js",
+  "main": "src/app",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "bootstrap": "^4.3.1",
     "express": "^4.16.4",
+    "hbs": "^4.0.3",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.7",
     "yargs": "^13.2.2"
   },
   "devDependencies": {},

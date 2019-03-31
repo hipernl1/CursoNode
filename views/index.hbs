@@ -1,0 +1,34 @@
+{{>header}}
+<div class="container">
+    <p>
+        Bienvenido a la pagina de promedio
+    </p>
+    <form action="/calculos" method="POST">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" name="nombre" placeholder="Nombre del estudiante">
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="nota1">Nota 1</label>
+                    <input type="number" class="form-control" name="nota1" required>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="nota2">Nota 2</label>
+                    <input type="number" class="form-control" name="nota2" required>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label for="nota3">Nota 3</label>
+                    <input type="number" class="form-control" name="nota3" required>
+                </div>
+            </div>    
+        </div>
+        <button type="submit" class="btn btn-dark">Calcular</button>
+    </form>
+</div>
+{{>footer}}
