@@ -1,0 +1,29 @@
+{{>header}}
+<div class="container">
+        <p>
+            {{titulo}}
+        </p>
+        <form action="/inscribirCurso" method="POST">
+        <label for="cursoId">Inscripción al curso {{curso}} - {{nombre}}</label>
+        <input type="hidden" name="cursoId" id="cursoId" value={{curso}}>
+        
+        <div class="form-group">
+            <label for="id">Documento de identidad:</label>
+            <input type="number" class="form-control" name="documento" placeholder="Documento de identidad" required>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" name="nombre" placeholder="Nombre aspirante" required>
+        </div>
+        <div class="form-group">
+            <label for="correo">Email</label>
+            <input type="email" class="form-control" name="correo" placeholder="Correo electrónico" required>
+        </div>
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" required>
+        </div>      
+        <button type="submit" class="btn btn-dark">Inscribir</button>
+    </form>
+</div>
+{{>footer}}

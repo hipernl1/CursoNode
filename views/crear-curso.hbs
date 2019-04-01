@@ -1,0 +1,54 @@
+{{>header}}
+<div class="container">
+    <p>
+        Por favor realizar la creación del curso
+    </p>    
+    <form action="/crearCurso" method="POST">
+        <div class="form-group">
+            <label for="id">id</label>
+            <input type="number" class="form-control" name="id" placeholder="Id del curso" required>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" name="nombre" placeholder="Nombre del curso" required>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <input type="text" class="form-control" name="descripcion" placeholder="Descripción del curso" required>
+        </div>
+        <div class="form-group">
+            <label for="valor">Valor</label>
+            <input type="number" class="form-control" name="valor" placeholder="valor del curso" required>
+        </div>
+
+
+
+        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+            <input type="radio" name="modalidad" class="form-control" id="presencial" autocomplete="off" value="Presencial"> Presencial
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="modalidad" class="form-control" id="virtual" autocomplete="off" value="Virtual"> Virtual
+        </label>
+        </div>
+
+        <div class="form-group">
+            <label for="intensidad">Intensidad horaria</label>
+            <input type="number" class="form-control" name="intensidad" placeholder="Intensidad horaria (Número de horas)">
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label for="estado">Estado</label>
+                </div>    
+                <div class="col">
+                    <input type="checkbox" checked disabled class="form-control" name="estado">
+                </div>
+            </div>                
+        </div>
+       
+        <button type="submit" class="btn btn-dark">Crear curso</button>
+    </form>
+</div>
+{{>footer}}

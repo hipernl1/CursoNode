@@ -1,12 +1,22 @@
 Una vez instalados los paquetes correspondientes puede ejecutar:
 
-// Para visulizar los cursos disponibles
-node principal 
+// Para Iniciar el servidor ejecute
+nodemon src/app -e js,hbs
 
-// Para inscribir un curso
-node principal inscribir -i 1 -n Leonardo -c 8001
+En el menu se presentan 3 roles
 
-// Para tratar de incribir un curso que no esta disponible
-node principal inscribir -i 10 -n Leonardo -c 8001
+Para minimizar errores humanos los cursos se cierran con un simple click al igual que al eliminar estudiantes
 
-Y ver los resultados de cada operacion en http://localhost:3000/
+    Coordinador: - Puede crear cursos (Crear curso) (Deberías ser la primera accion a realizar)
+                 - Puede listar cursos (Listar cursos)
+                 - Puede listar cursos con sus estudiantes (Listar cursos y estudiantes)
+                 - Puede Cerrar cursos  (Listar cursos y estudiantes - cerrar curso)
+                 - Puede eliminar aspirantes (Listar cursos y estudiantes - borrar aspirante) 
+    
+    Interesado: - Puede listar cursos (Listar cursos)
+
+    Aspirante:  - Puede listar cursos (Listar cursos)
+                - Puede Inscribirse a cursos (Listar cursos - inscribir)
+
+
+Una vez iniciada la apĺicacion dirijase a http://localhost:3000/

@@ -20,8 +20,8 @@ app.use('/js', express.static(directorioModulos + '/bootstrap/dist/js'));
 
 
 app.get('/',(req, res) => {
-    res.render('index', {
-        titulo:'Inicio'
+    res.render('crear-curso', {
+        titulo: 'Creación de curso'
     });
 });
 
@@ -42,6 +42,83 @@ app.post('/calculos',(req, res) => {
     });
 });
 
+app.get('/crear-curso',(req, res) => {
+    console.log(req.query);
+    res.render('crear-curso', {
+        titulo: 'Creación de curso'
+    });
+});
+
+app.post('/crearCurso',(req, res) => {
+    console.log(req.body);
+    let modalidad = req.body.modalidad;
+    if(req.body.modalidad == undefined){
+        modalidad = '';
+    }
+    let estado = 'Disponible';
+
+    res.render('crearCurso', {
+        titulo: 'Curso creado correctamente',
+        id: parseInt(req.body.id),
+        nombre: req.body.nombre,
+        descripcion: req.body.descripcion,
+        valor: parseInt(req.body.valor),
+        modalidad: modalidad,
+        intensidad: req.body.intensidad,
+        estado: estado
+    });
+});
+
+app.get('/cursos',(req, res) => {
+    res.render('cursos',{
+        titulo:'Cursos disponibles',
+        rol: req.query.rol
+    });
+});
+
+app.get('/inscribir',(req, res) => {
+    res.render('inscribir',{
+        titulo:'Inscribir al Curso',
+        curso: parseInt(req.query.curso),
+        nombre: req.query.nombre
+    });
+});
+
+app.post('/inscribirCurso',(req, res) => {
+    console.log(req.body.cursoId+ " "+req.body.documento+" "+parseInt(req.body.documento) + " "+ req.body.nombre +" " +
+        req.body.correo +" "+req.body.telefono)
+    res.render('inscribirCurso',{
+        titulo:'Inscribir al Curso',
+        id: req.body.cursoId,
+        documento: parseInt(req.body.documento),
+        nombre: req.body.nombre,
+        email: req.body.correo,
+        telefono: req.body.telefono
+    });
+});
+
+
+app.get('/cursosEstudiantes',(req, res) => {
+    res.render('cursos-estudiantes',{
+        titulo:'Cursos y estudiantes inscritos'
+    });
+});
+
+app.post('/cerrarCurso', (req, res) => {
+    res.render('cerrarCurso',{
+        titulo:'Cursos y estudiantes inscritos',
+        id: parseInt(req.body.cursoId),
+    });
+});
+
+app.post('/borrarEstudiante', (req, res) => {
+    res.render('borrarEstudiante',{
+        titulo:'Cursos y estudiantes inscritos',
+        cursoId: parseInt(req.body.cursoId),
+        documento: parseInt(req.body.documento)
+    });
+});
+
 app.get('*', (req, res) => {
     res.render('error', {
         titulo :'Pagina de error'
@@ -49,5 +126,5 @@ app.get('*', (req, res) => {
 })
 
 app.listen(3000, () => {
-    console.log('Escuchando ppor el puerto 30000');
+    console.log('Escuchando por el puerto 3000');
 });
