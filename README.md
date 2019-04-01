@@ -4,7 +4,7 @@ Tener en cuenta los pasos previo a la ejecución de la aplicación:
     2. luego cd CursoNode
     3. git checkout develop (es importante hacer el cambio de rama ya que por defecto baja el master)
     4. npm install
-    5. nodemon src/app -e js,hbs ó nodemon src/app -e js,hbs
+    5. nodemon src/app -e js,hbs ó node src/app -e js,hbs
 
 Una vez instalados los paquetes correspondientes puede ejecutar:
 
