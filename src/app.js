@@ -2,7 +2,12 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const hbs = require('hbs');
+const mogoose = require('mongoose')
+
 const bodyParser = require('body-parser')
+const Curso = require('./models/curso')
+const Aspirante = require('./models/aspirante')
+const AspiranteCurso = require('./models/aspiranteCurso')
 require('./helpers');
 
 const directorioModulos = path.join(__dirname, '../node_modules');
@@ -50,82 +55,191 @@ app.get('/crear-curso',(req, res) => {
 });
 
 app.post('/crearCurso',(req, res) => {
-    console.log(req.body);
+    console.log('Creando curso: ' +req.body.nombre);
     let modalidad = req.body.modalidad;
     if(req.body.modalidad == undefined){
         modalidad = '';
     }
     let estado = 'Disponible';
 
-    res.render('crearCurso', {
-        titulo: 'Curso creado correctamente',
-        id: parseInt(req.body.id),
+    let curso = new Curso({
+        id: req.body.id,
         nombre: req.body.nombre,
         descripcion: req.body.descripcion,
-        valor: parseInt(req.body.valor),
+        valor: req.body.valor,
         modalidad: modalidad,
         intensidad: req.body.intensidad,
         estado: estado
     });
+    curso.save((err, result) => {
+        if(err){
+            res.render('error', {
+                mensaje : err                
+            });
+            return console.log('Error: ' +err);
+        }
+        res.render('crear-curso', {
+            titulo: 'Curso creado correctamente',
+            id: result.id,
+            nombre: result.nombre,
+            descripcion: result.descripcion,
+            valor: result.valor,
+            modalidad: result.modalidad,
+            intensidad: result.intensidad,
+            estado: result.estado
+        });
+        return console.log('Curso Creado: ' +result);
+    });
+
+    
 });
 
 app.get('/cursos',(req, res) => {
-    res.render('cursos',{
-        titulo:'Cursos disponibles',
-        rol: req.query.rol
-    });
+    try{
+        Curso.find({}).exec((err, respuesta)=>{
+          if(err){
+            return console.log("Error al consultar los cursos: "+err);
+          }
+          res.render('cursos',{
+            titulo:'Cursos disponibles',
+            rol: req.query.rol,
+            listado : respuesta
+            });
+        });    
+    }catch(error){
+        console.log('No encontro cursos '+error);
+        cursos = [];
+    }
+
+    
 });
 
 app.get('/inscribir',(req, res) => {
     res.render('inscribir',{
         titulo:'Inscribir al Curso',
-        curso: parseInt(req.query.curso),
-        nombre: req.query.nombre
+        cursoId: parseInt(req.query.curso),
+        curso: req.query.nombre
     });
 });
 
 app.post('/inscribirCurso',(req, res) => {
-    console.log(req.body.cursoId+ " "+req.body.documento+" "+parseInt(req.body.documento) + " "+ req.body.nombre +" " +
-        req.body.correo +" "+req.body.telefono)
-    res.render('inscribirCurso',{
-        titulo:'Inscribir al Curso',
-        id: req.body.cursoId,
-        documento: parseInt(req.body.documento),
+    console.log('Inscribir curso: ' +req.body.nombre);
+    let aspirante = new Aspirante({
+        documento: req.body.documento,
         nombre: req.body.nombre,
-        email: req.body.correo,
+        email: req.body.email,
         telefono: req.body.telefono
     });
+    aspirante.save((err, result) => {        
+        let aspiranteCurso = new AspiranteCurso({
+            cursoId : req.body.cursoId,
+            documento : aspirante.documento
+        });
+
+        aspiranteCurso.save((err, resultado) => {
+            if(err){
+                res.render('error', {
+                    mensaje : err                
+                });
+                return console.log('Error: ' +err);
+            }
+            res.render('inscribir', {
+                titulo: '¡Estudiante inscrito correctamente!',
+                cursoId : resultado.cursoId,
+                curso : req.query.curso,
+                documento: result.documento,
+                nombre: result.nombre,
+                email: result.email,
+                telefono: result.telefono
+            });
+        });
+
+        return console.log('ASpirante Creado: ' +result);
+    });
+
+
 });
 
 
 app.get('/cursosEstudiantes',(req, res) => {
-    res.render('cursos-estudiantes',{
-        titulo:'Cursos y estudiantes inscritos'
-    });
+    consultarListadoEstudiantes(req, res, 'Cursos existentes');
 });
 
+function consultarListadoEstudiantes(req, res, titulo){
+    try{
+        Curso.find({}).exec((err, cursos)=>{
+          if(err){
+            return console.log("Error al consultar los cursos: "+err);
+          }
+          Aspirante.find({}).exec((error, aspirantes)=>{
+            if(error){
+              return console.log("Error al consultar los cursos: "+error);
+            }
+            AspiranteCurso.find({}).exec((errorr, asociaciones)=>{
+                if(errorr){
+                  return console.log("Error al consultar los cursos: "+errorr);
+                }
+                    res.render('cursos-estudiantes',{
+                        titulo: titulo,
+                        rol: req.query.rol,
+                        cursos : cursos,
+                        aspirantes : aspirantes,
+                        asociaciones : asociaciones,
+                        cursoId : req.body.cursoId
+                    });
+                });
+            });
+        });    
+    }catch(error){
+        console.log('No encontro cursos '+error);
+        cursos = [];
+    }
+}  
+
 app.post('/cerrarCurso', (req, res) => {
-    res.render('cerrarCurso',{
-        titulo:'Cursos y estudiantes inscritos',
-        id: parseInt(req.body.cursoId),
+    Curso.findOneAndUpdate({id: parseInt(req.body.cursoId)}, { estado: 'Cerrado' },(err, curso)=>{
+        if(err){
+          return console.log("Error al actualizar el curso: "+err);
+        }
     });
+    consultarListadoEstudiantes(req, res, 'Curso cerrado correctamente');
 });
 
 app.post('/borrarEstudiante', (req, res) => {
-    res.render('borrarEstudiante',{
+    /*res.render('borrarEstudiante',{
         titulo:'Cursos y estudiantes inscritos',
         cursoId: parseInt(req.body.cursoId),
         documento: parseInt(req.body.documento)
-    });
+    });*/
+    AspiranteCurso.findOneAndDelete({ cursoId: req.body.cursoId, documento: req.body.documento}, req.body,         
+        (err, result)=>{
+            if(err){
+                return console.log("Error al eliminar el aspirante: "+err);
+              }
+        });
+
+    consultarListadoEstudiantes(req, res, 'Aspirante eliminado!');
 });
 
 app.get('*', (req, res) => {
     res.render('error', {
         titulo :'Pagina de error'
     })
-})
+});
 
 const port = process.env.PORT || 3000;
+process.env.URLDB = 'mongodb://localhost:27017/asignaturas';
+
+//mongodb+srv://leonardo:Supernova321@cursobasiconode-ihxpf.mongodb.net/asignaturas?retryWrites=true
+
+mogoose.connect(process.env.URLDB,{useNewUrlParser:true}, (err, result) => {
+	if(err){
+		return console.log(err);
+	}
+	console.log("Conectado");
+});
+
+
 
 app.listen(port, () => {
     console.log('Escuchando por el puerto '+port);

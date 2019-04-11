@@ -4,24 +4,25 @@
             {{titulo}}
         </p>
         <form action="/inscribirCurso" method="POST">
-        <label for="cursoId">Inscripción al curso {{curso}} - {{nombre}}</label>
-        <input type="hidden" name="cursoId" id="cursoId" value={{curso}}>
+        <label for="cursoId">Inscripción al curso {{cursoId}} - {{curso}}</label>
+        <input type="hidden" name="cursoId" id="cursoId" value={{cursoId}}>
+        <input type="hidden" name="curso" id="curso" value={{curso}}>
         
         <div class="form-group">
             <label for="id">Documento de identidad:</label>
-            <input type="number" class="form-control" name="documento" placeholder="Documento de identidad" required>
+            <input type="number" class="form-control" name="documento" placeholder="Documento de identidad" value="{{documento}}" required>
         </div>
         <div class="form-group">
             <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" name="nombre" placeholder="Nombre aspirante" required>
+            <input type="text" class="form-control" name="nombre" placeholder="Nombre aspirante" value="{{nombre}}" required>
         </div>
         <div class="form-group">
             <label for="correo">Email</label>
-            <input type="email" class="form-control" name="correo" placeholder="Correo electrónico" required>
+            <input type="email" class="form-control" name="email" placeholder="Correo electrónico" value="{{email}}" required>
         </div>
         <div class="form-group">
             <label for="telefono">Teléfono</label>
-            <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" required>
+            <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" value="{{telefono}}" required>
         </div>      
         <button type="submit" class="btn btn-dark">Inscribir</button>
     </form>

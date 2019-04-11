@@ -1,5 +1,8 @@
 const hbs = require('hbs');
 var fs = require('fs');
+const mogoose = require('mongoose')
+const Curso = require('./models/curso')
+const Aspirante = require('./models/aspirante')
 
 hbs.registerHelper('obtenerPromedio',(nota1, nota2, nota3) => {
     return (nota1+nota2+nota3)/3;
@@ -88,8 +91,7 @@ hbs.registerHelper('crearCurso',(id, nombre, descripcion, valor, modalidad, inte
   }
 });
 
-hbs.registerHelper('listarCursos', (rol) => {
-    listarCursos();
+hbs.registerHelper('listarCursos', (rol, cursos) => {
     if(rol == 'interesado'|| rol == 'aspirante'){
       cursos = cursos.filter(curso => curso.estado == 'Disponible');
     }    
@@ -138,13 +140,13 @@ hbs.registerHelper('listarCursos', (rol) => {
 
 });
 
-hbs.registerHelper('listarCursosEstudiantes', (cursoId) => {
-  listarCursos();  
-  listarAspirantes();
+hbs.registerHelper('listarCursosEstudiantes', (cursoId, cursos, aspirantes, asociaciones) => {
+  //let cursos = listarCursos();  
+  //listarAspirantes();
   let texto = '<div class="accordion" id="accordionExample"> ';
   i = 1;
   cursos.forEach(curso => {
-     listarAsociacion();
+     //listarAsociacion();
       texto = texto +
           `<div class="card">
           <div class="card-header" id="heading${i}">
@@ -188,8 +190,8 @@ hbs.registerHelper('listarCursosEstudiantes', (cursoId) => {
               <th> Accion </th>
               </thead> 
               <tbody> `
-                asociaciones = asociaciones.filter(aso => aso.cursoId == curso.id);
-                asociaciones.forEach(aso => {
+                asociacionesFilter = asociaciones.filter(aso => aso.cursoId == curso.id);
+                asociacionesFilter.forEach(aso => {
                   let aspirante = aspirantes.find(asp => asp.documento == aso.documento);
                   if(aspirante){
                     texto = texto +
@@ -272,6 +274,10 @@ hbs.registerHelper('borrarEstudiante', (cursoId, documento) => {
   }
 });
 
+hbs.registerHelper('mensaje', (mensaje) => {
+  return `<h1>No fue posiblecompletar la operación ${mensaje} </h1>`;
+});
+
 let archivoCurso = "cursos.json";
 let archivoAspirantes = "aspirantes.json";
 let archivoAsociacion = "asociacion.json";
@@ -340,9 +346,16 @@ const crear = (id , nombre, descripcion, valor, modalidad, intensidad, estado) =
 
 const listarCursos = () => {
   try{
-    cursos = require('../cursos.json');
+    Curso.find({}).exec((err, respuesta)=>{
+      if(err){
+        return console.log("Error al consultar los cursos: "+err);
+      }
+      //cursos = respuesta;
+      console.log("Cursos encontrados: "+respuesta);
+      return respuesta;      
+    });    
   }catch(error){
-    console.log('No encontro cursos.json');
+    console.log('No encontro cursos '+error);
     cursos = [];
   }
 }
