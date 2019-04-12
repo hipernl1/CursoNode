@@ -229,8 +229,8 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-//process.env.URLDB = 'mongodb://localhost:27017/asignaturas';
-process.env.URLDB='mongodb+srv://prueba:prueba123@mongoremote-huptc.mongodb.net/asignaturas?retryWrites=true'
+process.env.URLDB = process.env.URLDB || 'mongodb://localhost:27017/asignaturas';
+//process.env.URLDB='mongodb+srv://prueba:prueba123@mongoremote-huptc.mongodb.net/asignaturas?retryWrites=true'
                    
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser:true }, (err, result) => {
