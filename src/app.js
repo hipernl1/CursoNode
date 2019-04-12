@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const hbs = require('hbs');
-const mogoose = require('mongoose')
+const mongoose = require('mongoose')
+const mongodb = require('mongodb')
 
 const bodyParser = require('body-parser')
 const Curso = require('./models/curso')
@@ -228,13 +229,13 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-process.env.URLDB = 'mongodb://localhost:27017/asignaturas';
+//process.env.URLDB = 'mongodb://localhost:27017/asignaturas';
+process.env.URLDB='mongodb+srv://prueba:prueba123@mongoremote-huptc.mongodb.net/asignaturas?retryWrites=true'
+                   
 
-//mongodb+srv://leonardo:Supernova321@cursobasiconode-ihxpf.mongodb.net/asignaturas?retryWrites=true
-
-mogoose.connect(process.env.URLDB,{useNewUrlParser:true}, (err, result) => {
+mongoose.connect(process.env.URLDB, { useNewUrlParser:true }, (err, result) => {
 	if(err){
-		return console.log(err);
+		return console.log("No es posible conectar a la BD: "+err);
 	}
 	console.log("Conectado");
 });
