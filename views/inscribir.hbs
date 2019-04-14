@@ -8,22 +8,32 @@
         <input type="hidden" name="cursoId" id="cursoId" value={{cursoId}}>
         <input type="hidden" name="curso" id="curso" value={{curso}}>
         
-        <div class="form-group">
-            <label for="id">Documento de identidad:</label>
-            <input type="number" class="form-control" name="documento" placeholder="Documento de identidad" value="{{documento}}" required>
-        </div>
-        <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" name="nombre" placeholder="Nombre aspirante" value="{{nombre}}" required>
-        </div>
-        <div class="form-group">
-            <label for="correo">Email</label>
-            <input type="email" class="form-control" name="email" placeholder="Correo electrónico" value="{{email}}" required>
-        </div>
-        <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" value="{{telefono}}" required>
-        </div>      
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="documento">Documento</label>
+                    <input type="number" class="form-control" name="documento" placeholder="Documento" value="{{documento}}" required disabled>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="form-group">
+                    <label for="nombre">Nombre - Usuario</label>
+                    <input type="text" class="form-control" name="nombre" placeholder="Nombre" value="{{nombre}}" required disabled>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" placeholder="Email" value="{{email}}" required disabled>
+                </div>
+            </div>    
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" value="{{telefono}}" required disabled>
+                </div>
+            </div>
+        </div>    
         <button type="submit" class="btn btn-dark">Inscribir</button>
     </form>
 </div>

@@ -92,7 +92,7 @@ hbs.registerHelper('crearCurso',(id, nombre, descripcion, valor, modalidad, inte
 });
 
 hbs.registerHelper('listarCursos', (rol, cursos) => {
-    if(rol == 'interesado'|| rol == 'aspirante'){
+    if(rol == 'interesado'|| rol == 'Aspirante'){
       cursos = cursos.filter(curso => curso.estado == 'Disponible');
     }    
     let texto = '<div class="accordion" id="accordionExample"> ';
@@ -101,24 +101,24 @@ hbs.registerHelper('listarCursos', (rol, cursos) => {
         texto = texto +
             `<div class="card">
             <div class="card-header" id="heading${i}">
-              <h2 class="mb-0">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
-                  Nombre: ${curso.nombre} Descripción: ${curso.descripcion} Valor: ${curso.valor} 
-                </button>`
-                if(rol == 'aspirante'){
+              <h2 class="mb-0">`
+                if(rol == 'Aspirante'){
                   texto = texto +
-                    `<a href="/inscribir?curso=${curso.id}&nombre=${curso.nombre}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Inscribir</a>
+                    `<a href="/inscribir?curso=${curso.id}&nombre=${curso.nombreCurso}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Inscribir</a>
                     
                     `
                 }
-          texto = texto +
-                `</h2>
+                texto = texto + `    
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                  Nombre: ${curso.nombreCurso} - Descripción: ${curso.descripcion} - Valor: ${curso.valor} 
+                </button>
+              </h2>
             </div>
         
             <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
               <div class="card-body">
                Id         :  ${curso.id} <br>
-               Nombre     :  ${curso.nombre} <br>
+               Nombre     :  ${curso.nombreCurso} <br>
                Descripción:  ${curso.descripcion} <br>
                Valor      :  ${curso.valor} <br>              
                Modalidad  :  ${curso.modalidad} <br>              
@@ -150,20 +150,10 @@ hbs.registerHelper('listarCursosEstudiantes', (cursoId, cursos, aspirantes, asoc
       texto = texto +
           `<div class="card">
           <div class="card-header" id="heading${i}">
-            <h2 class="mb-0">
-              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}"                   
-              aria-expanded="true" aria-controls="collapse${i}">
-                Nombre: ${curso.nombre} Descripción: ${curso.descripcion} `
-                if(curso.estado == 'Disponible'){
-                  texto = texto + ` Estado     :  Disponible `
-                }else{
-                  texto = texto + ` Estado     :  Cerrado `
-                }
-      texto = texto + `
-              </button>`
+            <h2 class="mb-0">`
               if(curso.estado == 'Disponible'){    
                 texto = texto + `
-                <form action="/cerrarCurso" method="POST">
+                <form class="form-inline my-2 my-lg-0" action="/cerrarCurso" method="POST">
                   <div class="form-group">
                       <input type="hidden" name="cursoId" id="cursoId" value=${curso.id}>
                   </div>               
@@ -171,7 +161,17 @@ hbs.registerHelper('listarCursosEstudiantes', (cursoId, cursos, aspirantes, asoc
                 </form>
                 `
               }
+              texto = texto + `
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}"                   
+              aria-expanded="true" aria-controls="collapse${i}">
+                Nombre: ${curso.nombreCurso} - Descripción: ${curso.descripcion} `
+                if(curso.estado == 'Disponible'){
+                  texto = texto + ` - Estado     :  Disponible `
+                }else{
+                  texto = texto + ` - Estado     :  Cerrado `
+                }
       texto = texto + `
+              </button>
             </h2>
           </div>
       
@@ -231,13 +231,13 @@ hbs.registerHelper('listarCursosEstudiantes', (cursoId, cursos, aspirantes, asoc
 hbs.registerHelper('inscribirCurso', (id, documento, nombre, email, telefono) => {
   listarCursos();
   let curso = cursos.find(cur => cur.id == id);
-  console.log("Curso encontrado "+curso.nombre);
+  console.log("Curso encontrado "+curso.nombreCurso);
   if(!curso){
     return "<h1> El curso no existe </h1>";
   }else{
     agregarAspirante(documento, nombre, email, telefono);
     if(asociarAspiranteACurso(id, documento)){
-      return `<h1>¡El aspirante ${nombre} fué inscrito al curso ${curso.nombre} Correctamente! </h1>`;     
+      return `<h1>¡El aspirante ${nombre} fué inscrito al curso ${curso.nombreCurso} Correctamente! </h1>`;     
     }
     return "<h1> El aspirante ya esta inscrito en el curso! </h1>";     
   }  
@@ -246,7 +246,7 @@ hbs.registerHelper('inscribirCurso', (id, documento, nombre, email, telefono) =>
 hbs.registerHelper('cerrarCurso', (id) => {
   listarCursos();
   let curso = cursos.find(cur => cur.id == id);
-  console.log("Curso encontrado "+curso.nombre);
+  console.log("Curso encontrado "+curso.nombreCurso);
   if(!curso){
     return "<h1> El curso no existe </h1>";
   }else{
@@ -275,7 +275,39 @@ hbs.registerHelper('borrarEstudiante', (cursoId, documento) => {
 });
 
 hbs.registerHelper('mensaje', (mensaje) => {
-  return `<h1>No fue posiblecompletar la operación ${mensaje} </h1>`;
+  return `<h1>${mensaje} </h1>`;
+});
+
+hbs.registerHelper('compare', function (lvalue, operator, rvalue, options) {
+  var operators, result;
+  if (arguments.length < 3) {
+      throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+  }
+  if (options === undefined) {
+      options = rvalue;
+      rvalue = operator;
+      operator = "===";
+  }
+  operators = {
+      '==': function (l, r) { return l == r; },
+      '===': function (l, r) { return l === r; },
+      '!=': function (l, r) { return l != r; },
+      '!==': function (l, r) { return l !== r; },
+      '<': function (l, r) { return l < r; },
+      '>': function (l, r) { return l > r; },
+      '<=': function (l, r) { return l <= r; },
+      '>=': function (l, r) { return l >= r; },
+      'typeof': function (l, r) { return typeof l == r; }
+  };
+  if (!operators[operator]) {
+      throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+  }
+  result = operators[operator](lvalue, rvalue);
+  if (result) {
+      return options.fn(this);
+  } else {
+      return options.inverse(this);
+  }
 });
 
 let archivoCurso = "cursos.json";
@@ -303,24 +335,7 @@ const asociarAspiranteACurso = (cursoId, documento) => {
   }
 };
 
-const agregarAspirante = (documento, nombre, email, telefono) => {
-  listarAspirantes();
-  let aspirante = {
-    documento: documento,              
-    nombre: nombre,
-    email: email,
-    telefono: telefono
-  }   
-  let duplicado = aspirantes.find(aspirante => aspirante.documento == documento);
-  if(!duplicado){
-    aspirantes.push(aspirante);
-    guardarAspirantes();
-    return true;
-  }else{
-    console.log('agregarAspirante Identificador Duplicado');
-    return false;
-  }
-}
+
 
 const crear = (id , nombre, descripcion, valor, modalidad, intensidad, estado) => {
   listarCursos();

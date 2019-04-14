@@ -8,7 +8,7 @@ const cursoSchema = new Schema({
         required: [true, 'El id del curso es obligatorio.'],
         unique:true
     },
-    nombre : {
+    nombreCurso : {
         type: String,
         require: [true, 'El nombre del curso es obligatorio.'],
         trim: true

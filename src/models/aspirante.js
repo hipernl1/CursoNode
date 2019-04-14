@@ -13,6 +13,11 @@ const aspiranteSchema = new Schema({
         require: [true, 'El nombre del es obligatorio.'],
         trim: true
     },
+    contrasena : {
+        type: String,
+        require: [true, 'La contraseña es obligatorio.'],
+        trim: true
+    },
     email : {
         type: String,
         require: [true, 'La email es obligatoria.'],
@@ -21,6 +26,11 @@ const aspiranteSchema = new Schema({
     telefono :{
         type: Number,
         require: [true, 'El teléfono es obligatorio.'],
+    },
+    rol : {
+        type: String,
+        enum: {values: ['Aspirante', 'Coordinador'], message: 'La role es obligatoria.'},
+        require: true
     }
 });
 

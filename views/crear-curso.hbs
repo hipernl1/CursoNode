@@ -4,49 +4,58 @@
         {{{titulo}}}
     </p>    
     <form action="/crearCurso" method="POST">
-        <div class="form-group">
-            <label for="id">id</label>
-            <input type="number" class="form-control" name="id" placeholder="Id del curso" value="{{id}}" required>
+    <div class="row">
+        <div class="col-4">
+            <div class="form-group">
+                <label for="id">id</label>
+                <input type="number" class="form-control" name="id" placeholder="Id del curso" value="{{id}}" required>
+            </div>
+        </div>  
+        <div class="col-8">
+            <div class="form-group">
+                <label for="nombreCurso">Nombre</label>
+                <input type="text" class="form-control" name="nombreCurso" placeholder="Nombre del curso" value="{{nombreCurso}}" required>
+            </div>
+        </div>    
+        <div class="col-8">
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <input type="text"  class="form-control" name="descripcion" placeholder="Descripción del curso" value="{{descripcion}}" required>                    
+            </div>
         </div>
-        <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" name="nombre" placeholder="Nombre del curso" value="{{nombre}}" required>
+        <div class="col-4">
+            <div class="form-group">
+                <label for="valor">Valor</label>
+                <input type="number" class="form-control" name="valor" placeholder="valor del curso" value="{{valor}}" required>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <input type="text" class="form-control" name="descripcion" placeholder="Descripción del curso" value="{{descripcion}}" required>
+        <div class="col-6">
+            <div class="form-group">
+                <div class="form-group col-md-6">
+                    <label for="modalidad">Modalidad</label>
+                        <select class="form-control" id="modalidad" name="modalidad" >
+                            <option value="Presencial">Presencial</option>
+                            <option value="Virtual">Virtual</option>
+                        </select>
+                    </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="valor">Valor</label>
-            <input type="number" class="form-control" name="valor" placeholder="valor del curso" value="{{valor}}" required>
+        <div class="col-6">
+            <div class="form-group">
+                <label for="intensidad">Intensidad horaria</label>
+                <input type="number" class="form-control" name="intensidad" placeholder="Intensidad horaria (Número de horas)" value="{{intensidad}}">
+            </div>
         </div>
-
-        <div class="form-group btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="modalidad" class="form-control" id="presencial" autocomplete="off" value="Presencial"> Presencial
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="modalidad" class="form-control" id="virtual" autocomplete="off" value="Virtual"> Virtual
-        </label>
-        </div>
-
-        <div class="form-group">
-            <label for="intensidad">Intensidad horaria</label>
-            <input type="number" class="form-control" name="intensidad" placeholder="Intensidad horaria (Número de horas)" value="{{intensidad}}">
-        </div>
-
-        <div class="form-group">
-            <div class="row">
-                <div class="col">
-                    <label for="estado">Estado</label>
-                </div>    
-                <div class="col">
-                    <input type="checkbox" checked disabled class="form-control" name="estado">
-                </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="estado">Estado</label>
+                <input type="text" checked disabled class="form-control" name="estado" id="estado" value="Disponible">                
             </div>                
         </div>
-       
+       <div class="col-4">
         <button type="submit" class="btn btn-dark">Crear curso</button>
+       </div>
+       </div> 
     </form>
 </div>
 {{>footer}}
