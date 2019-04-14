@@ -178,7 +178,7 @@ app.get('/inscribir',(req, res) => {
 });
 
 app.post('/inscribirCurso',(req, res) => {
-    console.log('Inscribir curso: ' +req.body.nombre);
+    console.log('Inscribir curso: ' +req.body.curso);
     Aspirante.findById(req.session.usuario, (error, aspirante) => {
         let aspiranteCurso = new AspiranteCurso({
             cursoId : req.body.cursoId,
@@ -209,7 +209,7 @@ app.post('/inscribirCurso',(req, res) => {
                 return res.render('inscribir', {
                     titulo: '¡Estudiante inscrito correctamente!',
                     cursoId : resultado.cursoId,
-                    curso : aspirante.curso,
+                    curso : req.body.curso,
                     documento: aspirante.documento,
                     nombre: aspirante.nombre,
                     email: aspirante.email,
