@@ -310,25 +310,24 @@ app.post('/registro', (req, res) => {
                 mensaje : 'El usuario con documento '+ respuesta.documento +' ya esta registrado.'
             });          
         } 
+        aspirante.save((err, resultado)=>{
+            if(err){
+                res.render('error', {
+                    titulo :'Pagina de error',
+                    mensaje: 'Error al registrar al usuario '+err
+                })
+              return console.log("Error al crear al aspirante: "+err);
+            }
+            res.render('registro',{
+                titulo : '!El usuario fue registrado correctamente!',
+                documento: resultado.documento,              
+                nombre: resultado.nombre,
+                email: resultado.email,
+                telefono: resultado.telefono,
+                rol: resultado.role
+            })   
+          });   
       }); 
-      aspirante.save((err, resultado)=>{
-        if(err){
-            res.render('error', {
-                titulo :'Pagina de error',
-                mensaje: 'Error al registrar al usuario '+err
-            })
-          return console.log("Error al consultando aspirante: "+err);
-        }
-        res.render('registro',{
-            titulo : '!El usuario fue registrado correctamente!',
-            documento: resultado.documento,              
-            nombre: resultado.nombre,
-            email: resultado.email,
-            telefono: resultado.telefono,
-            rol: resultado.role
-        })   
-      });      
-
 });
 
 app.post('/login', (req, res) => {    
