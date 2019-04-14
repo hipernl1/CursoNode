@@ -243,7 +243,6 @@ function consultarListadoEstudiantes(req, res, titulo){
                 }
                     res.render('cursos-estudiantes',{
                         titulo: titulo,
-                        rol: req.query.rol,
                         cursos : cursos,
                         aspirantes : aspirantes,
                         asociaciones : asociaciones,
