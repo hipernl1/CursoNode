@@ -20,5 +20,6 @@ Para minimizar errores humanos los cursos se cierran con un simple click al igua
                 - Puede Inscribirse a cursos (Listar cursos - inscribir)
                 - Actualizar su usuario
 
+La contraseña de todos los usuarios es 789456
 
 Una vez iniciada la apĺicacion dirijase a http://localhost:3000/
