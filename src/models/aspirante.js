@@ -31,6 +31,9 @@ const aspiranteSchema = new Schema({
         type: String,
         enum: {values: ['Aspirante', 'Coordinador'], message: 'La role es obligatoria.'},
         require: true
+    },
+    avatar : {
+        type: Buffer
     }
 });
 

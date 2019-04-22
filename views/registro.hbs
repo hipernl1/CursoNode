@@ -3,7 +3,7 @@
     </br><p>
         {{titulo}}
     </p>
-    <form action="/registro" method="POST">
+    <form action="/registro" method="POST" enctype="multipart/form-data"> 
         <div class="row">
             <div class="col-4">
                 <div class="form-group">
@@ -45,7 +45,13 @@
                             </select>
                     </div>
                 </div>
-            </div>                
+            </div>      
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="archivo">Foto perfil</label>
+                    <input type="file" class="form-control" name="archivo" value="{{archivo}}" accept="image/png" required>
+                </div>
+            </div>                 
         </div>
         <button type="submit" class="btn btn-dark">Registrar</button>
     </form>

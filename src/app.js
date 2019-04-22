@@ -7,6 +7,10 @@ const mongodb = require('mongodb')
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
+const multer = require('multer')
+
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
 
 const bodyParser = require('body-parser')
@@ -48,27 +52,28 @@ app.use('/js', express.static(directorioModulos + '/jquery/dist'));
 app.use('/js', express.static(directorioModulos + '/popper.js/dist'));
 app.use('/js', express.static(directorioModulos + '/bootstrap/dist/js'));
 
-
-app.get('/',(req, res) => {
+app.get('/', (req, res) => {
     res.render('registro', {
         titulo: 'Registro de usuario'
     });
 });
 
+var upload = multer({ 
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter (req, file, cb){
+        if(!file.originalname.match(/\.(png)$/)){
+          return cb(new Error('El formato del archivo no es válido.'))
+        }
+        cb(null, true)
+    }
+})
+
 app.get('/listado',(req, res) => {
     console.log(req.query);
     res.render('listado', {
         titulo: 'Listado de estudiantes'
-    });
-});
-
-app.post('/calculos',(req, res) => {
-    console.log(req.query);
-    res.render('calculos', {
-        titulo: "Calculo de promedio de: "+ req.body.nombre,
-        nota1: parseInt(req.body.nota1),
-        nota2: parseInt(req.body.nota2),
-        nota3: parseInt(req.body.nota3)
     });
 });
 
@@ -286,15 +291,39 @@ app.get('/registro', (req, res) => {
 })
 
 
-app.post('/registro', (req, res) => {    
+app.post('/registro', upload.single('archivo') , (req, res) => {          
     let aspirante = new Aspirante({
         documento: req.body.documento,              
         nombre: req.body.nombre,
         email: req.body.email,
         telefono: req.body.telefono,
         contrasena : bcrypt.hashSync(req.body.contrasena, 10),
-        rol: req.body.rol
+        rol: req.body.rol,
+        avatar: req.file.buffer
     })
+
+    /*
+    var upload = multer({ 
+        limits: {
+            fileSize: 1000000
+        },
+        fileFilter (req, file, cb){
+            if(!file.originalname.match(/\.(png)$/)){
+              return cb(new Error('El formato del archivo no es válido.'))
+            }
+            cb(null, true)
+        }
+    }).single('archivo');
+    upload( req, res, function(err){
+        if(err){
+            return res.render('error', {
+                titulo :'Pagina de error',
+                mensaje: 'Error al registrar al usuario '+err
+            });
+        }
+    });*/
+
+
     Aspirante.findOne({ documento : aspirante.documento }).exec((err, respuesta)=>{
         if(err){
             res.render('error', {
@@ -356,12 +385,14 @@ app.post('/login', (req, res) => {
         }
         req.session.usuario = respuesta._id
         req.session.nombre = respuesta.nombre
-        req.session.rol = respuesta.rol        
+        req.session.rol = respuesta.rol  
+        avatar =  respuesta.avatar.toString('base64')    
         res.render('login',{
-            mensaje : '!Bienvenido !'+respuesta.nombre,
+            mensaje : '!Bienvenido! '+respuesta.nombre,
             session : true,
             nombre : req.session.nombre,
-            rol : req.session.rol
+            rol : req.session.rol,
+            avatar : avatar
         })
         console.log(req.session.nombre +" - "+ req.session.usuario + " - " +req.session.rol)
       }); 
@@ -427,6 +458,56 @@ app.get('/salir', (req, res) => {
     res.redirect('/');
 });
 
+app.get('/mis-cursos',(req, res) => {    
+    console.log("Actualizar usuario: "+req.session.usuario);
+    Aspirante.findById({_id : req.session.usuario },(error, aspirante) => {        
+        if(error){
+            console.log("Error al consultar los cursos del aspirante: "+error);
+            return res.render('error', {
+                mensaje : 'Error al consultar los cursos del aspirante'
+            }); 
+        }
+        if(aspirante){
+            console.log("Busca los cursos del documento: "+aspirante.documento);
+            AspiranteCurso.find({ documento : aspirante.documento}).exec((err, cursosId)=>{
+                if(err){
+                    console.log("Error al consultar los cursos del aspirante: "+err);
+                    return res.render('error', {
+                        mensaje : 'Error al consultar los cursos del aspirante'
+                    }); 
+                }
+                console.log("Busca los cursos: "+cursosId);
+                let cursosEncontrados = cursosId.map(function(entry) {
+                    return entry.cursoId;
+                });
+
+
+                if(cursosId){
+                    Curso.find({ id : { $in: cursosEncontrados}, estado:'Disponible' } ).exec((errCurso, cursos)=>{
+                        if(errCurso){
+                            return res.render('error', {
+                                mensaje : 'Error al consultar los cursos del aspirante'+errCurso
+                            }); 
+                        }
+                        console.log("Encontro los cursos los cursos: "+cursos);
+                        res.render('mis-cursos',{
+                            titulo: 'Mis cursos',
+                            cursos : cursos,
+                            documento : aspirante.documento,
+                            nombre : aspirante.nombre,
+                            rol : aspirante.rol
+                        });
+                    });
+                    
+                }
+
+            })
+
+        }
+    });    
+
+});
+
 app.get('*', (req, res) => {
     res.render('error', {
         titulo :'Pagina de error'
@@ -436,7 +517,13 @@ app.get('*', (req, res) => {
 const port = process.env.PORT || 3000;
 process.env.URLDB = process.env.URLDB || 'mongodb://localhost:27017/asignaturas';
 //process.env.URLDB='mongodb+srv://prueba:prueba123@mongoremote-huptc.mongodb.net/asignaturas?retryWrites=true'
-                   
+       
+// Socket io
+
+io.on('connection', client => {
+    console.log('Usuario conectado')
+})
+
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser:true }, (err, result) => {
 	if(err){
@@ -445,8 +532,6 @@ mongoose.connect(process.env.URLDB, { useNewUrlParser:true }, (err, result) => {
 	console.log("Conectado");
 });
 
-
-
-app.listen(port, () => {
+server.listen(port, () => {
     console.log('Escuchando por el puerto '+port);
 });
