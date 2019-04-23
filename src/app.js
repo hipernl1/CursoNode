@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
 const multer = require('multer')
+const sgMail = require('@sendgrid/mail');
+
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -22,6 +24,7 @@ require('./helpers');
 const directorioModulos = path.join(__dirname, '../node_modules');
 const directorioPublico = path.join(__dirname, '../public');
 const directorioPartials = path.join(__dirname, '../partials');
+
 
 app.use(session({
     cookie: { maxAge: 86400000},
@@ -302,28 +305,6 @@ app.post('/registro', upload.single('archivo') , (req, res) => {
         avatar: req.file.buffer
     })
 
-    /*
-    var upload = multer({ 
-        limits: {
-            fileSize: 1000000
-        },
-        fileFilter (req, file, cb){
-            if(!file.originalname.match(/\.(png)$/)){
-              return cb(new Error('El formato del archivo no es válido.'))
-            }
-            cb(null, true)
-        }
-    }).single('archivo');
-    upload( req, res, function(err){
-        if(err){
-            return res.render('error', {
-                titulo :'Pagina de error',
-                mensaje: 'Error al registrar al usuario '+err
-            });
-        }
-    });*/
-
-
     Aspirante.findOne({ documento : aspirante.documento }).exec((err, respuesta)=>{
         if(err){
             res.render('error', {
@@ -346,6 +327,19 @@ app.post('/registro', upload.single('archivo') , (req, res) => {
                 })
               return console.log("Error al crear al aspirante: "+err);
             }
+            //Notificacion por correo electronico
+            let msg = {
+                to: resultado.email,
+                from: 'leonardo.cruztriana@gmail.com',
+                subject: '¡Gracias por registrarse!',
+                html: '<strong>Bienvenido al modulo de registro de cursos <br> Quedaste registrado (a) con la siguiente información: <br>'+
+                                'Documento: '+ resultado.documento +'<br>'+              
+                                'Nombre: '+ resultado.nombre +'<br>'+              
+                                'Email: '+ resultado.email +'<br>'+
+                                'Teléfono: '+ resultado.email +'<br>'+
+                                'Rol: Aspirante<br> </strong>'
+            };
+            sgMail.send(msg)
             res.render('registro',{
                 titulo : '!El usuario fue registrado correctamente!',
                 documento: resultado.documento,              
@@ -481,7 +475,6 @@ app.get('/mis-cursos',(req, res) => {
                     return entry.cursoId;
                 });
 
-
                 if(cursosId){
                     Curso.find({ id : { $in: cursosEncontrados}, estado:'Disponible' } ).exec((errCurso, cursos)=>{
                         if(errCurso){
@@ -508,6 +501,20 @@ app.get('/mis-cursos',(req, res) => {
 
 });
 
+
+app.post('/chat',(req, res) => {  
+    res.render('chat', {
+        titulo :'Sala de Chat',
+        nombre : req.session.nombre
+    })
+});
+
+app.get('/chat',(req, res) => {  
+    res.render('chat', {
+        titulo :'Bienvenido al chat'
+    })
+});
+
 app.get('*', (req, res) => {
     res.render('error', {
         titulo :'Pagina de error'
@@ -516,12 +523,34 @@ app.get('*', (req, res) => {
 
 const port = process.env.PORT || 3000;
 process.env.URLDB = process.env.URLDB || 'mongodb://localhost:27017/asignaturas';
-//process.env.URLDB='mongodb+srv://prueba:prueba123@mongoremote-huptc.mongodb.net/asignaturas?retryWrites=true'
+process.env.SENDGRID_API_KEY = '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';
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
        
 // Socket io
 
+let contador = 0
 io.on('connection', client => {
-    console.log('Usuario conectado')
+    client.emit("mensaje", "Bienvenido");
+
+    client.on("mensaje", (informacion) => {
+        console.log(informacion);
+        client.emit("inicio", 'Bienvenido al chat de estudiantes')
+
+    });
+
+    client.on("contador", () => {
+        contador++
+        console.log(contador)
+        io.emit("contador", contador);
+    })
+
+    
+    client.on("texto", (texto, cb) => {        
+        console.log(texto)
+        io.emit("texto", texto)
+        cb();
+    })
 })
 
 

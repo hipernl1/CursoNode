@@ -311,65 +311,36 @@ hbs.registerHelper('compare', function (lvalue, operator, rvalue, options) {
 });
 
 hbs.registerHelper('misCursos', (cursos, documento, nombre, rol) => {
-  let texto = '<div class="accordion" id="accordionExample"> ';
-  i = 1;
+  let texto = `<table class="table table-striped"> 
+                <thead class="thead-dark"> 
+                <th> Id curso </th> 
+                <th> Curso </th> 
+                <th> Descripción </th> 
+                <th> Acción </th>
+                </thead> 
+                <tbody> `;
   cursos.forEach(curso => {
      //listarAsociacion();
       texto = texto +
-          `<div class="card">
-          <div class="card-header" id="heading${i}">
-            <h2 class="mb-0">
-              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}"                   
-              aria-expanded="true" aria-controls="collapse${i}">
-                Nombre: ${curso.nombreCurso} - Descripción: ${curso.descripcion} `
-                if(curso.estado == 'Disponible'){
-                  texto = texto + ` - Estado     :  Disponible `
-                }else{
-                  texto = texto + ` - Estado     :  Cerrado `
-                }
-      texto = texto + `
-              </button>
-            </h2>
-          </div>
-      
-          <div id="collapse${i}" class="collapse" aria-labelledby="heading${i}" data-parent="#accordionExample">
-            <div class="card-body"> 
-              <table class="table table-striped"> 
-              <thead class="thead-dark"> 
-              <th> Documento </th> 
-              <th> Nombre </th> 
-              <th> Email </th> 
-              <th> Telefono </th> 
-              <th> Accion </th>
-              </thead> 
-              <tbody> 
-                <tr> 
-                    <td> ${documento} </td>
-                    <td> ${nombre}</td>
-                    <td> ${rol} </td>
-                    <td> ${rol} </td> 
-                    <td> 
-                    
-                    <form action="/chat" method="POST">
-                      <div class="form-group">
-                          <input type="hidden" name="cursoId" id="cursoId" value=${curso.id}>
-                          <input type="hidden" name="documento" id="documento" value=${documento}>
-                      </div>               
-                      <button type="submit" class="btn btn-dark">Chat</button>
-                    </form>
+          ` <tr> 
+                    <td> ${curso.id} </td>
+                    <td> ${curso.nombreCurso}</td>
+                    <td> ${curso.descripcion} </td>
+                    <td>                     
+                      <form action="/chat" method="POST" target="${curso.id}-chatForm" onsubmit="window.open('', '${curso.id}-chatForm','toolbars=no, scrollbars=no,resizable=no,width=200,height=500')">
+                        <div class="form-group">
+                            <input type="hidden" name="cursoId" id="cursoId" value=${curso.id}>
+                            <input type="hidden" name="nombre" id="nombre" value=${nombre}>
+                            <input type="hidden" name="documento" id="documento" value=${documento}>
+                            <input type="hidden" name="rol" id="rol" value=${rol}>
+                        </div>               
+                        <button type="submit" class="btn btn-dark">Chat estudiantes</button>
+                      </form>
                     </td>
 
-                    </tr>
-           </tbody> </table>`                  
-          
-      texto = texto + `
-            </div>
-          </div>
-        </div>`
-      i++;
+            </tr>` 
   });    
-  texto = texto + "</div>";
-  
+  texto = texto + "</tbody> </table>";  
   return texto;
 
 });
