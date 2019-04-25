@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!--bootstrap css-->
+        <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
+        <title>{{titulo}}</title>
+    </head>
+
+    <body>
+        <div class="container">
+        <br>
+            <form id="chat">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">                            
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" value="{{nombre}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label for="texto">Mensaje</label>
+                        <input type="text" id="texto">            
+                    </div>
+                    <br>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark">Enviar</button>
+                    </div>
+                </div>      
+            </form>
+            <div id="mensajes"></div>
+            <script src="socket.io/socket.io.js"></script>
+            <script src="js/sockets.js"></script>
+
+            
+        </div>
+    </body>
+</html>
+
