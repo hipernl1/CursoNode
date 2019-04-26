@@ -335,7 +335,7 @@ hbs.registerHelper('misCursos', (cursos, documento, nombre, rol) => {
                   texto = texto + ` - Estado     :  Cerrado `
                 }
                 texto = texto + `
-                  <form action="/chat" method="POST" target="${curso.id}-chatForm" onsubmit="window.open('', '${curso.id}-chatForm','toolbars=no, scrollbars=no,resizable=no,width=300,height=500')">
+                  <form action="/chat" method="POST" target="${curso.id}-chatForm" onsubmit="window.open('', '${curso.id}-chatForm','toolbars=no, scrollbars=no,resizable=no,width=350,height=800')">
                         <div class="form-group">
                             <input type="hidden" name="cursoId" id="cursoId" value=${curso.id}>
                             <input type="hidden" name="nombre" id="nombre" value=${nombre}>
