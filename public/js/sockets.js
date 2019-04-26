@@ -38,5 +38,5 @@ socket.on("texto", (texto) => {
 
 socket.on("inicio", (texto) => {
     console.log(texto);
-    mensajes.innerHTML = mensajes.innerHTML + texto+'<br>'
+    mensajes.innerHTML = mensajes.innerHTML +'<b>' + texto+'</b><br>'
 });

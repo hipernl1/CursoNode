@@ -41,6 +41,7 @@ app.use((req, res, next) => {
         res.locals.session = true
         res.locals.nombre = req.session.nombre
         res.locals.rol = req.session.rol
+        res.locals.avatar = req.session.avatar
     }
     next()
 });
@@ -66,7 +67,7 @@ var upload = multer({
         fileSize: 1000000
     },
     fileFilter (req, file, cb){
-        if(!file.originalname.match(/\.(png)$/)){
+        if(!file.originalname.match(/\.(png||pdf)$/)){
           return cb(new Error('El formato del archivo no es válido.'))
         }
         cb(null, true)
@@ -87,14 +88,12 @@ app.get('/crear-curso',(req, res) => {
     });
 });
 
-app.post('/crearCurso',(req, res) => {
+app.post('/crearCurso', upload.single('introduccion'), (req, res) => {
     console.log('Creando curso: ' +req.body.nombre);
     let modalidad = req.body.modalidad;
     if(req.body.modalidad == undefined){
         modalidad = '';
-    }
-    let estado = 'Disponible';
-
+    }    
     let curso = new Curso({
         id: req.body.id,
         nombreCurso: req.body.nombreCurso,
@@ -102,7 +101,8 @@ app.post('/crearCurso',(req, res) => {
         valor: req.body.valor,
         modalidad: modalidad,
         intensidad: req.body.intensidad,
-        estado: estado
+        estado: 'Disponible',
+        introduccion: req.file.buffer
     });
 
     Curso.findOne({ id : curso.id } , (err, resultado) => {
@@ -336,7 +336,7 @@ app.post('/registro', upload.single('archivo') , (req, res) => {
                                 'Documento: '+ resultado.documento +'<br>'+              
                                 'Nombre: '+ resultado.nombre +'<br>'+              
                                 'Email: '+ resultado.email +'<br>'+
-                                'Teléfono: '+ resultado.email +'<br>'+
+                                'Teléfono: '+ resultado.telefono +'<br>'+
                                 'Rol: Aspirante<br> </strong>'
             };
             sgMail.send(msg)
@@ -380,13 +380,13 @@ app.post('/login', (req, res) => {
         req.session.usuario = respuesta._id
         req.session.nombre = respuesta.nombre
         req.session.rol = respuesta.rol  
-        avatar =  respuesta.avatar.toString('base64')    
+        req.session.avatar =  respuesta.avatar.toString('base64')    
         res.render('login',{
             mensaje : '!Bienvenido! '+respuesta.nombre,
             session : true,
             nombre : req.session.nombre,
             rol : req.session.rol,
-            avatar : avatar
+            avatar : req.session.avatar
         })
         console.log(req.session.nombre +" - "+ req.session.usuario + " - " +req.session.rol)
       }); 
@@ -483,6 +483,11 @@ app.get('/mis-cursos',(req, res) => {
                             }); 
                         }
                         console.log("Encontro los cursos los cursos: "+cursos);
+                        
+                        cursos.forEach(micurso => {
+                             micurso.introduccion = micurso.introduccion.toString('base64');
+                        })
+
                         res.render('mis-cursos',{
                             titulo: 'Mis cursos',
                             cursos : cursos,
@@ -513,6 +518,16 @@ app.get('/chat',(req, res) => {
     res.render('chat', {
         titulo :'Bienvenido al chat'
     })
+});
+
+app.get('/pdf', (req, res) => {
+    console.log("/pdf");
+    res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="filename.pdf"'
+    });
+    const download = Buffer.from(req.body.introduccion.toString('utf-8'), 'base64');
+    res.end(download);
 });
 
 app.get('*', (req, res) => {
@@ -550,6 +565,10 @@ io.on('connection', client => {
         console.log(texto)
         io.emit("texto", texto)
         cb();
+    })
+
+    client.on("disconnect", () => {        
+        io.emit("inicio", " Uno de los usuarios se ha desconectado.")        
     })
 })
 

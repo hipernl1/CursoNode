@@ -15,22 +15,19 @@
         <div class="container">
         <br>
             <form id="chat">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">                            
-                            <label for="nombre">Nombre</label>
-                            <input type="text" id="nombre" value="{{nombre}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-12">
+                <input type="hidden" id="nombre" value="{{nombre}}">
+                <div class="card" style="width: 18rem;">
+                <img src="data:img/png;base64,{{avatar}}" height="20%" width="20%" class="card-img-top" alt="{{nombre}}">
+                <div class="card-body">
+                    <h5 class="card-title">Bienvenido al chat</h5>
+                    <p class="card-text">{{nombre}}
                         <label for="texto">Mensaje</label>
-                        <input type="text" id="texto">            
-                    </div>
-                    <br>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-dark">Enviar</button>
-                    </div>
-                </div>      
+                        <input type="text" id="texto">  
+                    </p>                    
+                    <button type="submit" class="btn btn-dark">Enviar</button>
+                </div>
+                </div>
+
             </form>
             <div id="mensajes"></div>
             <script src="socket.io/socket.io.js"></script>

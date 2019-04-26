@@ -35,6 +35,9 @@ const cursoSchema = new Schema({
         type: String,
         enum: {values: ['Disponible', 'Cerrado'], message:'El estado no esta dentro de los valores permitidos.'}
     },
+    introduccion : {
+        type : Buffer
+    }
 });
 
 cursoSchema.plugin(uniqueValidator);

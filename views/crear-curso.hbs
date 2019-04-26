@@ -3,7 +3,7 @@
     <p>
         {{{titulo}}}
     </p>    
-    <form action="/crearCurso" method="POST">
+    <form action="/crearCurso" method="POST" enctype="multipart/form-data">
     <div class="row">
         <div class="col-4">
             <div class="form-group">
@@ -46,11 +46,17 @@
                 <input type="number" class="form-control" name="intensidad" placeholder="Intensidad horaria (Número de horas)" value="{{intensidad}}">
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-6">
             <div class="form-group">
                 <label for="estado">Estado</label>
                 <input type="text" checked disabled class="form-control" name="estado" id="estado" value="Disponible">                
             </div>                
+        </div>
+        <div class="col-6">
+                <div class="form-group">
+                    <label for="introduccion">Introducción e indicaciones generales</label>
+                    <input type="file" class="form-control" name="introduccion" value="{{introduccion}}" accept=".pdf" required>
+                </div>
         </div>
        <div class="col-4">
         <button type="submit" class="btn btn-dark">Crear curso</button>

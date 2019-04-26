@@ -3,6 +3,7 @@ var fs = require('fs');
 const mogoose = require('mongoose')
 const Curso = require('./models/curso')
 const Aspirante = require('./models/aspirante')
+const pdfmake = require('pdfmake/src/printer');
 
 hbs.registerHelper('obtenerPromedio',(nota1, nota2, nota3) => {
     return (nota1+nota2+nota3)/3;
@@ -311,23 +312,30 @@ hbs.registerHelper('compare', function (lvalue, operator, rvalue, options) {
 });
 
 hbs.registerHelper('misCursos', (cursos, documento, nombre, rol) => {
-  let texto = `<table class="table table-striped"> 
-                <thead class="thead-dark"> 
-                <th> Id curso </th> 
-                <th> Curso </th> 
-                <th> Descripción </th> 
-                <th> Acción </th>
-                </thead> 
-                <tbody> `;
+  let texto = '<div class="accordion" id="misCursos"> ';
+  i = 1;
   cursos.forEach(curso => {
-     //listarAsociacion();
-      texto = texto +
-          ` <tr> 
-                    <td> ${curso.id} </td>
-                    <td> ${curso.nombreCurso}</td>
-                    <td> ${curso.descripcion} </td>
-                    <td>                     
-                      <form action="/chat" method="POST" target="${curso.id}-chatForm" onsubmit="window.open('', '${curso.id}-chatForm','toolbars=no, scrollbars=no,resizable=no,width=200,height=500')">
+    var objbuilder = '';
+    objbuilder += ('<object width="100%" height="100%" data="data:application/pdf;base64,');
+    objbuilder += (curso.introduccion);
+    objbuilder += ('" type="application/pdf" class="internal">');
+    objbuilder += ('<embed src="data:application/pdf;base64,');
+    objbuilder += (curso.introduccion);
+    objbuilder += ('" type="application/pdf"  />');
+    objbuilder += ('</object>');
+     texto = texto +
+      `<div class="card">
+        <div class="card-header" id="heading${i}">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+                Id Curso: ${curso.id} - Nombre: ${curso.nombreCurso} - Descripción: ${curso.descripcion} `
+                if(curso.estado == 'Disponible'){
+                  texto = texto + ` - Estado     :  Disponible `
+                }else{
+                  texto = texto + ` - Estado     :  Cerrado `
+                }
+                texto = texto + `
+                  <form action="/chat" method="POST" target="${curso.id}-chatForm" onsubmit="window.open('', '${curso.id}-chatForm','toolbars=no, scrollbars=no,resizable=no,width=300,height=500')">
                         <div class="form-group">
                             <input type="hidden" name="cursoId" id="cursoId" value=${curso.id}>
                             <input type="hidden" name="nombre" id="nombre" value=${nombre}>
@@ -335,14 +343,31 @@ hbs.registerHelper('misCursos', (cursos, documento, nombre, rol) => {
                             <input type="hidden" name="rol" id="rol" value=${rol}>
                         </div>               
                         <button type="submit" class="btn btn-dark">Chat estudiantes</button>
-                      </form>
-                    </td>
-
-            </tr>` 
+                  </form> 
+              </button>
+            </h2>
+        </div>
+      
+        <div id="collapse${i}" class="collapse " aria-labelledby="heading${i}" data-parent="#misCursos">
+            <div class="card-body"> 
+              <table class="table table-striped"> 
+                <thead class="thead-dark"> 
+                  <th> Introducción e indicaciones </th> 
+                </thead> 
+                <tbody> 
+                  <tr> 
+                      <td> ${objbuilder} </td>
+                  </tr>
+                 </tbody> 
+              </table>
+            </div>
+          </div>
+        </div>`
+      i++;
   });    
-  texto = texto + "</tbody> </table>";  
+  texto = texto + "</div>";
+  
   return texto;
-
 });
 
 
