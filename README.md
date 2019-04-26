@@ -5,8 +5,6 @@ nodemon src/app -e js,hbs
 
 En el menu se presentan 3 roles
 
-Para minimizar errores humanos los cursos se cierran con un simple click al igual que al eliminar estudiantes
-
     Coordinador: - Puede crear cursos (Crear curso) (Deberías ser la primera accion a realizar)
                  - Puede listar cursos con sus estudiantes (Administrar cursos y estudiantes)
                  - Puede Cerrar cursos  (Listar cursos y estudiantes - cerrar curso)
@@ -19,6 +17,7 @@ Para minimizar errores humanos los cursos se cierran con un simple click al igua
     Aspirante:  - Puede listar cursos (Listar cursos)
                 - Puede Inscribirse a cursos (Listar cursos - inscribir)
                 - Actualizar su usuario
+                - Puede listar los cursos en los que esta inscrito
 
 La contraseña de todos los usuarios es 789456
 
