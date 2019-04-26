@@ -128,7 +128,7 @@ app.post('/crearCurso', upload.single('introduccion'), (req, res) => {
                 return console.log('Error: ' +err);
             }
             res.render('crear-curso', {
-                titulo: 'Curso creado correctamente',
+                titulo: '¡Curso creado correctamente!',
                 id: result.id,
                 nombreCurso: result.nombreCurso,
                 descripcion: result.descripcion,
@@ -273,7 +273,7 @@ app.post('/cerrarCurso', (req, res) => {
           return console.log("Error al actualizar el curso: "+err);
         }
     });
-    consultarListadoEstudiantes(req, res, 'Curso cerrado correctamente');
+    consultarListadoEstudiantes(req, res, '¡Curso cerrado correctamente!');
 });
 
 app.post('/borrarEstudiante', (req, res) => {
