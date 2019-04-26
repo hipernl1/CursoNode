@@ -8,14 +8,22 @@
         <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
         <link href="/css/bootstrap-select.min.css" rel="stylesheet" type="text/css">
         <title>{{titulo}}</title>
+        <style>
+        .card-img-top {
+            width: 50%;
+            height: 40%;
+            margin-bottom: 50px;
+        }
+        </style>
+
     </head>
     <body>
         <div class="container">
         <br>
             <form id="chat">
                 <input type="hidden" id="nombre" value="{{nombre}}">
-                <div class="card" style="width: 18rem;">
-                <img src="data:img/png;base64,{{avatar}}" height="20%" width="20%" class="card-img-top" alt="{{nombre}}">
+                <div class="card align-items-center" style="width: 18rem;">
+                <img src="data:img/png;base64,{{avatar}}" class="card-img-top" alt="{{nombre}}">
                 <div class="card-body">
                     <h5 class="card-title">Bienvenido al chat</h5>
                     <p class="card-text">{{nombre}}
